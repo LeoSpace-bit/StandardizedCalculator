@@ -1,0 +1,19 @@
+﻿<Window x:Class="StandardizedCalculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StandardizedCalculator"
+        mc:Ignorable="d"
+        Title="Standardized Calculator" Height="450" Width="800" Loaded="Window_Loaded">
+    <Grid>
+        <StackPanel x:Name="CombinedMethodPanel">
+            <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16"/>
+            <Label Content="F(x) = 2sin(x) - 2 - x" FontSize="16"/>
+            <Label Content="F'(x) = 2cos(x) - 1" FontSize="16"/>
+            <Label Content="F''(x) = -2sin(x)" FontSize="16"/>
+
+        </StackPanel>
+
+    </Grid>
+</Window>
