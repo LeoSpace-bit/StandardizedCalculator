@@ -6,14 +6,73 @@
         xmlns:local="clr-namespace:StandardizedCalculator"
         mc:Ignorable="d"
         Title="Standardized Calculator" Height="450" Width="800" Loaded="Window_Loaded">
-    <Grid>
-        <StackPanel x:Name="CombinedMethodPanel">
-            <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16"/>
-            <Label Content="F(x) = 2sin(x) - 2 - x" FontSize="16"/>
-            <Label Content="F'(x) = 2cos(x) - 1" FontSize="16"/>
-            <Label Content="F''(x) = -2sin(x)" FontSize="16"/>
 
-        </StackPanel>
+    <Window.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="Primary Blue Color" Color= "#348EF6"/>
+        <SolidColorBrush x:Key="Secondary Blue Color" Color="#EFF2FF"/>
+        <SolidColorBrush x:Key="Primary Text Color" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="Secondary Text Color" Color="#BBC1D1"/>
+        <SolidColorBrush x:Key="Primary Gray Color" Color="#BBC1D1"/>
+
+        <!-- Start: TabItem Style -->
+        <Style x:Key="TabItemStyle" TargetType = "TabItem">
+            <Setter Property = "Background" Value = "Transparent"/>
+            <Setter Property = "Foreground" Value = "{DynamicResource Secondary Text Color}"/>
+            <Setter Property = "BorderThickness" Value="0"/>
+            <Setter Property = "BorderBrush" Value = "Transparent"/>
+            <Setter Property="Margin" Value="0 0 5 5"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+
+        </Style>
+        <!-- End: TabItem Style -->
+
+        <!-- Start: TabControl Style -->
+        <Style x:Key="TabControlStyle" TargetType="TabControl">
+            
+        </Style>
+        <!-- End: TabControl Style -->
+
+
+
+    </Window.Resources>
+
+
+    <Grid Background="{DynamicResource Primary Blue Color}">
+
+        <Border VerticalAlignment="Top" HorizontalAlignment="Center" Background="{DynamicResource Primary Text Color}">
+            <TabControl Width="800" Height="400" Style="{DynamicResource TabControlStyle}">
+
+                <TabItem  Header="Нелинейные уравнения" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold">
+                    <StackPanel>
+                        <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16" FontWeight="Normal"/>
+                        <Label Content="F(x) = 2sin(x) - 2 - x" FontSize="16" FontWeight="Normal"/>
+                        <Label Content="F'(x) = 2cos(x) - 1" FontSize="16" FontWeight="Normal"/>
+                        <Label Content="F''(x) = -2sin(x)" FontSize="16" FontWeight="Normal"/>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem  Header="Интегрирование" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold">
+                    <StackPanel>
+                        <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16" FontWeight="Normal"/>
+                        <Label Content="F(x) = 2sin(x) - 2 - x" FontSize="16" FontWeight="Normal"/>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem  Header="Система уравнений" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold">
+                    <StackPanel>
+                        <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16" FontWeight="Normal"/>
+                    </StackPanel>
+                </TabItem>
+
+
+
+            </TabControl>
+        </Border>
+         
+        
 
     </Grid>
 </Window>
