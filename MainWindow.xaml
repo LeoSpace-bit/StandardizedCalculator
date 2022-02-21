@@ -5,74 +5,337 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StandardizedCalculator"
         mc:Ignorable="d"
-        Title="Standardized Calculator" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="Standardized Calculator" ResizeMode="NoResize"  WindowStyle="None" WindowStartupLocation="CenterScreen" Height="480" Width="800" Background="{DynamicResource PrimaryBaseColor}" BorderBrush="Black">
 
     <Window.Resources>
         <!-- Colors -->
-        <SolidColorBrush x:Key="Primary Blue Color" Color= "#348EF6"/>
-        <SolidColorBrush x:Key="Secondary Blue Color" Color="#EFF2FF"/>
-        <SolidColorBrush x:Key="Primary Text Color" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="Secondary Text Color" Color="#BBC1D1"/>
-        <SolidColorBrush x:Key="Primary Gray Color" Color="#BBC1D1"/>
+        <SolidColorBrush x:Key="PrimaryBaseColor" Color= "#FFE0E9F9"/>
+        <SolidColorBrush x:Key="SecondaryBaseColor" Color="White"/>
+        <SolidColorBrush x:Key="PrimaryTextColor" Color="#FF404040"/>
+        <SolidColorBrush x:Key="Secondary Text Color" Color="#FF989898"/>
+        <SolidColorBrush x:Key="PrimaryGrayColor" Color="#FFFCF9FF"/>
 
         <!-- Start: TabItem Style -->
         <Style x:Key="TabItemStyle" TargetType = "TabItem">
             <Setter Property = "Background" Value = "Transparent"/>
-            <Setter Property = "Foreground" Value = "{DynamicResource Secondary Text Color}"/>
+            <Setter Property = "Foreground" Value = "{DynamicResource PrimaryTextColor}"/>
             <Setter Property = "BorderThickness" Value="0"/>
             <Setter Property = "BorderBrush" Value = "Transparent"/>
-            <Setter Property="Margin" Value="0 0 5 5"/>
-            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="Margin" Value="4,0,4,-1.5"/>
+            <Setter Property="Padding" Value="30,12,30,8"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid SnapsToDevicePixels="True">
+                            <Border CornerRadius="5" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Margin="{TemplateBinding Margin}" />
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Top" SnapsToDevicePixels="True" RecognizesAccessKey="True" Margin="{TemplateBinding Padding}" ContentSource="Header" Focusable="False"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value= "{DynamicResource SecondaryBaseColor}"/>
+                                <Setter Property="Foreground" Value= "{DynamicResource PrimaryTextColor}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Background" Value="{DynamicResource SecondaryBaseColor}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
 
         </Style>
         <!-- End: TabItem Style -->
 
         <!-- Start: TabControl Style -->
         <Style x:Key="TabControlStyle" TargetType="TabControl">
-            
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+
         </Style>
         <!-- End: TabControl Style -->
-
-
 
     </Window.Resources>
 
 
-    <Grid Background="{DynamicResource Primary Blue Color}">
+    <Grid Background="{DynamicResource PrimaryBaseColor}">
 
-        <Border VerticalAlignment="Top" HorizontalAlignment="Center" Background="{DynamicResource Primary Text Color}">
-            <TabControl Width="800" Height="400" Style="{DynamicResource TabControlStyle}">
+        <Grid Height="45" VerticalAlignment="Top" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+            <TextBlock  Text="калькулятор" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="29" Margin="0,8,0,0" />
+            <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Width="36" FontSize="26" Height="36" Margin="0,-6,-2,0" Click="CloseForm_Click" >
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
 
-                <TabItem  Header="Нелинейные уравнения" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold">
-                    <StackPanel>
-                        <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16" FontWeight="Normal"/>
-                        <Label Content="F(x) = 2sin(x) - 2 - x" FontSize="16" FontWeight="Normal"/>
-                        <Label Content="F'(x) = 2cos(x) - 1" FontSize="16" FontWeight="Normal"/>
-                        <Label Content="F''(x) = -2sin(x)" FontSize="16" FontWeight="Normal"/>
+
+        <Border VerticalAlignment="Top" HorizontalAlignment="Center" Background="{DynamicResource PrimaryBaseColor}" Margin="0,50,0,0">
+            <TabControl Width="800" Height="430" Style="{DynamicResource TabControlStyle}" Background="{DynamicResource SecondaryBaseColor}" BorderBrush="#FF27282B">
+
+                <TabItem  Header="нелинейные уравнения" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold" >
+                    <StackPanel Background="{DynamicResource PrimaryGrayColor}">
+
+                        <StackPanel Orientation="Horizontal" >
+                            <Label Content="Найти решение уравнения: 2sin(x) = x + 2 на отрезке от" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" />
+                            <TextBox x:Name="NLQ_from" Text="-10" VerticalAlignment="Stretch" MaxWidth="110" MinWidth="60" Height="34" FontWeight="Bold" TextAlignment="Center" Margin="0,5,0,0" />
+                            <Label Content="до" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" />
+                            <TextBox x:Name="NLQ_to" Text="10" VerticalAlignment="Stretch" MaxWidth="110" MinWidth="60" Height="34" FontWeight="Bold" TextAlignment="Center" Margin="0,5,0,0" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="с точностью" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" />
+                            <TextBox x:Name="NLQ_precision" MaxWidth="650" MinWidth="60" Text="0,00001" FontWeight="Bold" TextAlignment="Center" Margin="0,5,0,0" />
+                        </StackPanel>
+
+                        <Button x:Name="NLE"  Content="рассчитать" Height="40" Background="{DynamicResource PrimaryBaseColor}" Foreground="{DynamicResource PrimaryTextColor}" FontWeight="Bold" FontSize="24" Padding="1,1,1,5" Click="NLE_Calculate" Margin="0,10,0,10" />
+
+                        <StackPanel x:Name="NLE_AdditinalText" Visibility="Hidden">
+                            <Label Content="Преобразуем уравнение: F(x) = 2sin(x) - 2 - x" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,5,0,0" />
+                            <Label Content="Найдём производную первого порядка: F'(x) = 2cos(x) - 1" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" />
+                            <Label Content="Найдём производную второго порядка: F''(x) = -2sin(x)" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,25" />
+                            <Label x:Name="NLE_Answer" Content="Ответ: " FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" />
+                        </StackPanel>
+
+
                     </StackPanel>
                 </TabItem>
 
-                <TabItem  Header="Интегрирование" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold">
+                <TabItem  Header="интегрирование" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold">
                     <StackPanel>
-                        <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16" FontWeight="Normal"/>
-                        <Label Content="F(x) = 2sin(x) - 2 - x" FontSize="16" FontWeight="Normal"/>
+
+                        <Label Content="Решение определённого интеграла методом Монте-Карло, количество случайных" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,0" Height="36" />
+                        <StackPanel Orientation="Horizontal" >
+                            <Label Content="велечин: " FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,0" Height="36" />
+                            <TextBox x:Name="I_iteration" Text="100000" VerticalAlignment="Center" MaxWidth="680"  MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+                        </StackPanel>
+
+                        <StackPanel  Background="{DynamicResource PrimaryGrayColor}" Margin="0,20,0,0">
+                            <TextBox  x:Name="I_b" Text="2.6" VerticalAlignment="Stretch" MinWidth="50" FontWeight="Bold" TextAlignment="Center" Margin="5,5,0,0" HorizontalAlignment="Left" />
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="∫" FontSize="36" Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="20,-11,0,0" Height="60" />
+                                <TextBox  x:Name="I_integrand" Text="(sqrt(0.4 * x + 1.7)) / (1.5 * x + sqrt(x * x + 1.3))" MaxWidth="682" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="15,0,0,0" HorizontalAlignment="Left" />
+                                <Label Content="dx"  Width="34" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,0" Height="36" />
+                            </StackPanel>
+                            <TextBox  x:Name="I_a" Text="1.2" VerticalAlignment="Stretch" MinWidth="50"  FontWeight="Bold" TextAlignment="Center" Margin="5,0,0,2" HorizontalAlignment="Left" />
+                        </StackPanel>
+
+
+                        <Button Content="рассчитать" Height="40" Background="{DynamicResource PrimaryBaseColor}" Foreground="{DynamicResource PrimaryTextColor}" FontWeight="Bold" FontSize="24" Padding="1,1,1,5" Click="Integral_Calculate" Margin="0,10,0,10" />
+
+                        <Label Visibility="Hidden" x:Name="I_Answer" Content="Ответ: " FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" />
+
+
                     </StackPanel>
                 </TabItem>
 
-                <TabItem  Header="Система уравнений" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold">
-                    <StackPanel>
-                        <Label Content="Уравнение 2sin(x) = x + 2" FontSize="16" FontWeight="Normal"/>
-                    </StackPanel>
+                <TabItem  Header="cистема уравнений" Style="{DynamicResource TabItemStyle}" FontSize="20" FontWeight="Bold" >
+
+                    <Grid  Background="{DynamicResource PrimaryGrayColor}">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="190"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="80"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column ="0" Grid.ColumnSpan ="2" >
+                            <Label Grid.Row="0" Grid.Column ="0" Grid.ColumnSpan ="2" Content="Решение системы уравнений методом Гаусса с точностью" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}"/>
+                            <TextBox Grid.Row="0" Grid.Column ="1" x:Name="SoE_precision" MinWidth="60" MaxWidth="230" Text="0,01" FontWeight="Bold" TextAlignment="Center" Margin="0,5,0,0" />
+                        </StackPanel>
+
+                        <Label Grid.Row="1" Content=" {"  FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-40,-40,0,0" FontStyle="Normal" FontSize="172" FontFamily="Yu Gothic Light" VerticalAlignment="Top" Height="240"  />
+                        <StackPanel Grid.Row="1" Background="{DynamicResource PrimaryGrayColor}" VerticalAlignment="Center" Grid.Column="1" >
+
+                            <StackPanel Orientation="Horizontal" MaxWidth="682">
+
+                                <TextBox  x:Name="SoE_11" Text="4.8" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="15,0,0,0" HorizontalAlignment="Left" />
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x1</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_12" Text="12.5" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x2</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_13" Text="-6.3" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x3</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_14" Text="-9.7" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x4</Run>
+                                </Label>
+
+                                <Label Content="="  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_1A" Text="3.5" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="5,0,0,0" HorizontalAlignment="Left" />
+
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" MaxWidth="682">
+
+                                <TextBox  x:Name="SoE_21" Text="22" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="15,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x1</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_22" Text="-31.7" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x2</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_23" Text="12.4" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x3</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_24" Text="-8.7" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x4</Run>
+                                </Label>
+
+                                <Label Content="="  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_2A" Text="4.6" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="5,0,0,0" HorizontalAlignment="Left" />
+
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" MaxWidth="682">
+
+                                <TextBox x:Name="SoE_31" Text="15" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="15,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x1</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_32" Text="21.1" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x2</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_33" Text="-4.5" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x3</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_34" Text="14.4" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x4</Run>
+                                </Label>
+
+                                <Label Content="="  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_3A" Text="15" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="5,0,0,0" HorizontalAlignment="Left" />
+
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" MaxWidth="682">
+
+                                <TextBox  x:Name="SoE_41" Text="8.6" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="15,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x1</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_42" Text="-14.4" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x2</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_43" Text="6.2" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x3</Run>
+                                </Label>
+
+                                <Label Content="+"  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="-5,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_44" Text="2.8" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,0" HorizontalAlignment="Left" />
+
+                                <Label FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="5,0,5,0" FontStyle="Normal" Padding="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  >
+                                    <Run Typography.Variants="Subscript" >x4</Run>
+                                </Label>
+
+                                <Label Content="="  Width="26" FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,0" FontStyle="Normal"  />
+
+                                <TextBox  x:Name="SoE_4A" Text="-1.2" MaxWidth="80" VerticalAlignment="Center" MinWidth="60"  FontWeight="Bold" TextAlignment="Center" Margin="5,0,0,0" HorizontalAlignment="Left" />
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <Button Grid.Row="2" Grid.Column ="0" Grid.ColumnSpan ="2" Content="рассчитать" Height="40" Background="{DynamicResource PrimaryBaseColor}" Foreground="{DynamicResource PrimaryTextColor}" FontWeight="Bold" FontSize="24" Padding="1,1,1,5" Click="SoE_Calculate" Margin="0,10,0,10" VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="780" />
+
+                        <Label Grid.Row="2" Grid.Column ="0" Grid.ColumnSpan ="2" Visibility="Hidden"  x:Name="SoE_Answer" Content="Ответ: " FontWeight="Normal" Foreground="{DynamicResource PrimaryTextColor}" Margin="9,60,0,0"  />
+
+                    </Grid>
+
                 </TabItem>
-
-
 
             </TabControl>
         </Border>
-         
-        
-
     </Grid>
 </Window>
