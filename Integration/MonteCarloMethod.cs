@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AngouriMath.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +9,14 @@ namespace StandardizedCalculator.Integration
 {
     internal class MonteCarloMethod
     {
-        public double Calculate(Func<double, double> function, double a, double b, int n)
+        public double Calculate(FastExpression function, double a, double b, int n)
         {
             GenerateRandomValues(a, b, n, out double[] uValues);
 
             double accumulator = 0;
-
             foreach (var item in uValues)
             {
-                accumulator += function(item);
+                accumulator += function.Call(item).Real;
             }
 
             return (b - a) / n * accumulator;
@@ -38,8 +38,6 @@ namespace StandardizedCalculator.Integration
 
             uValues = values.ToArray();
         }
-
-
 
     }
 }

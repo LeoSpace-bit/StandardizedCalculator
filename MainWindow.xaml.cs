@@ -1,4 +1,5 @@
-﻿using Microsoft.CSharp;
+﻿using AngouriMath;
+using Microsoft.CSharp;
 using StandardizedCalculator.NonlinearEquation;
 using System;
 using System.CodeDom.Compiler;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -64,26 +66,38 @@ namespace StandardizedCalculator
                     MessageBox.Show($"Ошибка: {exc.Message}");
                 }
             }
-
-
             #endregion
         }
 
-        private void Integral_Calculate(object sender, RoutedEventArgs e)
+        private async void Integral_Calculate(object sender, RoutedEventArgs e)
         {
             #region Integral (2)
 
-            if(int.TryParse(I_iteration.Text, out int precision))
-            {
-                //ans = 0.446 // монте карло --> метод симпсона |
-                double f(double x) => (Math.Sqrt(0.4 * x + 1.7)) / (1.5 * x + Math.Sqrt(x * x + 1.3));
+            I_Calculating.IsEnabled = false;
+            I_Answer.Content = "Происходит расчёт";
 
-                if(double.TryParse(I_a.Text.Replace('.', ','), out double i_a))
+            if (int.TryParse(I_iteration.Text, out int precision))
+            {
+                if (double.TryParse(I_a.Text.Replace('.', ','), out double i_a))
                 {
                     if (double.TryParse(I_b.Text.Replace('.', ','), out double i_b))
                     {
-                        double answer = new Integration.MonteCarloMethod().Calculate(f, i_a, i_b, precision);
-                        I_Answer.Visibility = Visibility.Visible;
+                        Entity integrand = "x";
+
+                        try
+                        {
+                            if (!string.IsNullOrWhiteSpace(I_integrand.Text))
+                            {
+                                integrand = I_integrand.Text;
+                            }
+                        }
+                        catch (Exception exc)
+                        {
+                            MessageBox.Show($"Неверный формат{Environment.NewLine}{exc.Message}");
+                        }
+
+                        double answer = await Task.Run(() => new Integration.MonteCarloMethod().Calculate(integrand.Compile("x"), i_a, i_b, precision));
+
                         I_Answer.Content = $"Ответ: {answer}";
                     }
                     else
@@ -101,12 +115,17 @@ namespace StandardizedCalculator
                 MessageBox.Show("Неверный формат ввода количества итераций");
             }
 
+            I_Calculating.IsEnabled = true;
+
             #endregion
         }
 
-        private void SoE_Calculate(object sender, RoutedEventArgs e)
+        private async void SoE_Calculate(object sender, RoutedEventArgs e)
         {
             #region SystemOfEquations (1)
+
+            SoE_Calculating.IsEnabled = false;
+            SoE_Answer.Content = "Происходит расчёт";
 
             double precision = Math.Abs(CheckPrecision(SoE_precision, 1));
 
@@ -129,10 +148,8 @@ namespace StandardizedCalculator
                                         { x31, x32, x33, x34, x3A },
                                         { x41, x42, x43, x44, x4A }
                                     };
-                                    double[] array = new SystemOfEquations.GaussMethod(matrix).Calculate();
-                                    string values = $"\tx\u2081 = {Math.Round(array[0], (int)Math.Abs(Math.Log10(precision)))}\t\tx\u2082 = {Math.Round(array[1], (int)Math.Abs(Math.Log10(precision)))}{ Environment.NewLine}\tx\u2083 = {Math.Round(array[2], (int)Math.Abs(Math.Log10(precision)))}\t\tx\u2084 = {Math.Round(array[3], (int)Math.Abs(Math.Log10(precision)))}";
-                                    SoE_Answer.Visibility = Visibility.Visible;
-                                    SoE_Answer.Content = $"Ответ: {values}";
+                                    double[] array = await Task.Run(() => new SystemOfEquations.GaussMethod(matrix).Calculate());
+                                    SoE_Answer.Content = $"Ответ: \tx\u2081 = {Math.Round(array[0], (int)Math.Abs(Math.Log10(precision)))}\t\t\tx\u2082 = {Math.Round(array[1], (int)Math.Abs(Math.Log10(precision)))}{ Environment.NewLine}\tx\u2083 = {Math.Round(array[2], (int)Math.Abs(Math.Log10(precision)))}\t\t\tx\u2084 = {Math.Round(array[3], (int)Math.Abs(Math.Log10(precision)))}";
                                 }
                                 else
                                 {
@@ -159,6 +176,8 @@ namespace StandardizedCalculator
                     Debug.Write(es.Message);
                 }
             }
+
+            SoE_Calculating.IsEnabled = true;
 
             #endregion
         }
