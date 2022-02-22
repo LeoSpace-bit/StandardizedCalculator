@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StandardizedCalculator.SystemOfEquations
+﻿namespace StandardizedCalculator.SystemOfEquations
 {
     internal class GaussMethod
     {
@@ -24,8 +18,8 @@ namespace StandardizedCalculator.SystemOfEquations
                 }
             }
 
-            //Прямой ход (Зануление нижнего левого угла)
-            for (int k = 0; k < n; k++) //k-номер строки
+            //Forward move (Zeroing the lower left corner) 
+            for (int k = 0; k < n; k++)  //k-line number
             {
                 for (int i = 0; i < n + 1; i++)
                 {
@@ -50,7 +44,7 @@ namespace StandardizedCalculator.SystemOfEquations
                 }
             }
 
-            //Обратный ход (Зануление верхнего правого угла)
+            //Reverse move (Zeroing the upper right corner)
             for (int k = n - 1; k > -1; k--)
             {
                 for (int i = n; i > -1; i--)
@@ -68,7 +62,7 @@ namespace StandardizedCalculator.SystemOfEquations
                 }
             }
 
-            //Отделяем от общей матрицы ответы
+            //Separate answers from the general matrix
             var answer = new double[n];
             for (int i = 0; i < n; i++)
             {
