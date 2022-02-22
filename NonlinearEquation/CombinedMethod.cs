@@ -28,30 +28,60 @@ namespace StandardizedCalculator.NonlinearEquation
         {
             do
             {
-                if ( Equation.Function(start, Equation.Precision) * Equation.SecondDerivatives(start, Equation.Precision) < 0)
+                if (Equation.Function.Call(start).Real * Equation.SecondDerivatives.Call(start).Real < 0)
                 {
-                    start -=  Equation.Function(start, Equation.Precision) * (start - end) / (Equation.Function(start, Equation.Precision) - Equation.Function(end, Equation.Precision));
+                    start -= Equation.Function.Call(start).Real * (start - end) / (Equation.Function.Call(start).Real - Equation.Function.Call(end).Real);
                 }
-                else if ( Equation.Function(start, Equation.Precision) * Equation.SecondDerivatives(start, Equation.Precision) > 0)
+                else if ( Equation.Function.Call(start).Real * Equation.SecondDerivatives.Call(start).Real > 0)
                 {
-                    start -= Equation.Function(start, Equation.Precision) / Equation.FirstDerivative(start, Equation.Precision);
+                    start -= Equation.Function.Call(start).Real / Equation.FirstDerivative.Call(start).Real;
                 }
 
 
-                if (Equation.Function(end, Equation.Precision) * Equation.SecondDerivatives(end, Equation.Precision) < 0)
+                if (Equation.Function.Call(end).Real * Equation.SecondDerivatives.Call(end).Real < 0)
                 {
-                    end -= Equation.Function(end, Equation.Precision) * (end - start) / (Equation.Function(end, Equation.Precision) - Equation.Function(start, Equation.Precision));
+                    end -= Equation.Function.Call(end).Real * (end - start) / (Equation.Function.Call(end).Real - Equation.Function.Call(start).Real);
                 }
-                else if (Equation.Function(end, Equation.Precision) * Equation.SecondDerivatives(end, Equation.Precision) > 0)
+                else if (Equation.Function.Call(end).Real * Equation.SecondDerivatives.Call(end).Real > 0)
                 {
-                    end -= Equation.Function(end, Equation.Precision) / Equation.FirstDerivative(end, Equation.Precision);
+                    end -= Equation.Function.Call(end).Real / Equation.FirstDerivative.Call(end).Real;
                 }
 
             } while (Math.Abs(start - end) > 2 * precision);
 
-            return Math.Round((start + end) / 2, Equation.Precision);
+            return Math.Round((start + end) / 2, (int)Math.Abs(Math.Log10(Equation.Precision)));
 
         }
 
     }
 }
+
+
+//public double Calculate(double start, double end, double precision)
+//{
+//    do
+//    {
+//        if (Equation.Function(start, Equation.Precision) * Equation.SecondDerivatives(start, Equation.Precision) < 0)
+//        {
+//            start -= Equation.Function(start, Equation.Precision) * (start - end) / (Equation.Function(start, Equation.Precision) - Equation.Function(end, Equation.Precision));
+//        }
+//        else if (Equation.Function(start, Equation.Precision) * Equation.SecondDerivatives(start, Equation.Precision) > 0)
+//        {
+//            start -= Equation.Function(start, Equation.Precision) / Equation.FirstDerivative(start, Equation.Precision);
+//        }
+
+
+//        if (Equation.Function(end, Equation.Precision) * Equation.SecondDerivatives(end, Equation.Precision) < 0)
+//        {
+//            end -= Equation.Function(end, Equation.Precision) * (end - start) / (Equation.Function(end, Equation.Precision) - Equation.Function(start, Equation.Precision));
+//        }
+//        else if (Equation.Function(end, Equation.Precision) * Equation.SecondDerivatives(end, Equation.Precision) > 0)
+//        {
+//            end -= Equation.Function(end, Equation.Precision) / Equation.FirstDerivative(end, Equation.Precision);
+//        }
+
+//    } while (Math.Abs(start - end) > 2 * precision);
+
+//    return Math.Round((start + end) / 2, Equation.Precision);
+
+//}

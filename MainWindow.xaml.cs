@@ -34,44 +34,56 @@ namespace StandardizedCalculator
         private void Grid_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => DragMove();
         private void CloseForm_Click(object sender, RoutedEventArgs e) => Close();
 
-        private void NLE_Calculate(object sender, RoutedEventArgs e)
+        private async void NLE_Calculate(object sender, RoutedEventArgs e)
         {
-            #region Combine method (3)
-
-            double value = Math.Abs(CheckPrecision(NLQ_precision, 1));
-
-            if (!double.IsNaN(value))
+            if (string.IsNullOrWhiteSpace(NLQ_from.Text) || string.IsNullOrWhiteSpace(NLQ_to.Text))
             {
-                try
+                return;
+            }
+
+            NLE_calculating.IsEnabled = false;
+            NLE_Answer.Content = "Происходит расчёт";
+
+            if (double.TryParse(NLQ_from.Text, out double minimum) && double.TryParse(NLQ_to.Text, out double maximum))
+            {
+                if(minimum > maximum)
                 {
-                    var equation = new Equation
-                    (
-                        precision: (int)Math.Abs(Math.Log10(value)),
-                        function: (x, precision) => Math.Round(2 * Math.Sin(x) - 2 - x, precision),
-                        firstDerivative: (x, precision) => Math.Round(2 * Math.Cos(x) - 1, precision),
-                        secondDerivatives: (x, precision) => Math.Round(-2 * Math.Sin(x), precision)
-                    );
-
-                    CombinedMethod combinedMethod = new(equation);
-
-                    double minimum = CheckValue(NLQ_from);
-                    double maximum = CheckValue(NLQ_to);
-
-                    NLE_AdditinalText.Visibility = Visibility.Visible;
-
-                    NLE_Answer.Content = $"Ответ: {combinedMethod.Calculate(minimum, maximum, Math.Pow(10, -equation.Precision))}";
+                    if (MessageBox.Show($"Инверсировать диапазон ?{Environment.NewLine}Есть: [{minimum}, {maximum}], будет [{maximum}, {minimum}]",
+                    "Неверный формат диапазона", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        (maximum, minimum) = (minimum, maximum);
+                        (NLQ_from.Text, NLQ_to.Text) = (minimum.ToString(), maximum.ToString());
+                    }
+                    else
+                    {
+                        NLE_Answer.Content = string.Empty;
+                        NLE_calculating.IsEnabled = true;
+                        return;
+                    }
                 }
-                catch (Exception exc)
+
+                var equation = GetEquation(NLQ_expression, NLQ_precision);
+
+                if (equation is not null)
                 {
-                    MessageBox.Show($"Ошибка: {exc.Message}");
+                    double answer = await Task.Run(() => new CombinedMethod(equation).Calculate(minimum, maximum, equation.Precision));
+                    NLE_Answer.Content = $"Ответ: {answer}";
+                }
+                else
+                {
+                    NLE_Answer.Content = string.Empty;
                 }
             }
-            #endregion
+
+            NLE_calculating.IsEnabled = true;
         }
 
         private async void Integral_Calculate(object sender, RoutedEventArgs e)
         {
-            #region Integral (2)
+            if(string.IsNullOrWhiteSpace(I_integrand.Text) || string.IsNullOrWhiteSpace(I_iteration.Text))
+            {
+                return;
+            }
 
             I_Calculating.IsEnabled = false;
             I_Answer.Content = "Происходит расчёт";
@@ -82,23 +94,30 @@ namespace StandardizedCalculator
                 {
                     if (double.TryParse(I_b.Text.Replace('.', ','), out double i_b))
                     {
-                        Entity integrand = "x";
-
-                        try
+                        if(i_a != i_b)
                         {
-                            if (!string.IsNullOrWhiteSpace(I_integrand.Text))
+                            Entity integrand = "x";
+
+                            try
                             {
-                                integrand = I_integrand.Text;
+                                if (!string.IsNullOrWhiteSpace(I_integrand.Text))
+                                {
+                                    integrand = I_integrand.Text;
+                                }
                             }
+                            catch (Exception exc)
+                            {
+                                MessageBox.Show($"Неверный формат{Environment.NewLine}{exc.Message}");
+                            }
+
+                            double answer = await Task.Run(() => new Integration.MonteCarloMethod().Calculate(integrand.Compile("x"), i_a, i_b, precision));
+
+                            I_Answer.Content = $"Ответ: {answer}";
                         }
-                        catch (Exception exc)
+                        else
                         {
-                            MessageBox.Show($"Неверный формат{Environment.NewLine}{exc.Message}");
+                            MessageBox.Show("Неверный формат, значения не могут быть одинаковыми; I = 0");
                         }
-
-                        double answer = await Task.Run(() => new Integration.MonteCarloMethod().Calculate(integrand.Compile("x"), i_a, i_b, precision));
-
-                        I_Answer.Content = $"Ответ: {answer}";
                     }
                     else
                     {
@@ -117,12 +136,10 @@ namespace StandardizedCalculator
 
             I_Calculating.IsEnabled = true;
 
-            #endregion
         }
 
         private async void SoE_Calculate(object sender, RoutedEventArgs e)
         {
-            #region SystemOfEquations (1)
 
             SoE_Calculating.IsEnabled = false;
             SoE_Answer.Content = "Происходит расчёт";
@@ -176,29 +193,17 @@ namespace StandardizedCalculator
                     Debug.Write(es.Message);
                 }
             }
+            else 
+            {
+                SoE_Answer.Content = string.Empty;
+            }
 
             SoE_Calculating.IsEnabled = true;
-
-            #endregion
         }
 
-        private double CheckValue(TextBox number)
+        private double CheckPrecision(TextBox numbernBox, double limit)
         {
-            var text = number.Text.Replace('.', ',');
-            try
-            {
-                return double.Parse(text);
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Неверный формат");
-                return double.NaN;
-            }
-        }
-
-        private double CheckPrecision(TextBox number, double limit)
-        {
-            var text = number.Text.Replace('.', ',');
+            var text = numbernBox.Text.Replace('.', ',');
             Regex regex = new Regex(@"^-?[0-9][0-9,\.]+$");
 
             if (regex.IsMatch(text))
@@ -206,16 +211,53 @@ namespace StandardizedCalculator
                 double d = double.Parse(text);
                 if (Math.Abs(d) >= limit)
                 {
-                    MessageBox.Show($"Установлен лимит |x| <= {limit}");
+                    MessageBox.Show($"Установлен лимит |n| <= {limit}");
                     return double.NaN;
                 }
                 return d;
             }
             else
             {
-                MessageBox.Show("Неверный формат");
+                MessageBox.Show("Неверный формат, 0 < n < 1");
             }
             return double.NaN;
+        }
+
+        private Equation? GetEquation(TextBox expressionBox, TextBox precisionnBox)
+        {
+            if(expressionBox is null)
+            {
+                return null;
+            }
+
+            Equation? equation = null;
+
+            if (double.TryParse(precisionnBox.Text, out double precision))
+            {
+                try
+                {
+                    Entity expression = expressionBox.Text;
+                    var derivative1 = expression.Differentiate("x");
+                    var derivative2 = derivative1.Differentiate("x");
+
+                    equation = new Equation(expression.Compile("x"), derivative1.Compile("x"), derivative2.Compile("x"), precision);
+
+                    Derivative1.Content = $"Производная первого порядка: F'(x) = {derivative1}";
+                    Derivative2.Content = $"Производная второго порядка: F''(x) = {derivative2}";
+
+                }
+                catch
+                {
+                    Derivative1.Content = Derivative2.Content = string.Empty;
+                    MessageBox.Show("Неверный формат уравнения");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Неверный формат указанной точности");
+            }
+
+            return equation;
         }
 
     }
